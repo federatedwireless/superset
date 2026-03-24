@@ -28,7 +28,7 @@
     USER root
     
     # Replace frontend assets
-    COPY --from=frontend-builder /app/superset-frontend/build \
-        /app/superset/static/assets
+    COPY --from=frontend-builder /app/superset-frontend/dist \
+    /app/superset/static/assets
     
     USER superset
