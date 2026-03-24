@@ -208,6 +208,7 @@ import united_states_minor_outlying_islands from './countries/united_states_mino
 import united_states_virgin_islands from './countries/united_states_virgin_islands.geojson';
 import uruguay from './countries/uruguay.geojson';
 import usa from './countries/usa.geojson';
+import usa_counties from './countries/usa_county_map_min.geojson';
 import uzbekistan from './countries/uzbekistan.geojson';
 import vanuatu from './countries/vanuatu.geojson';
 import venezuela from './countries/venezuela.geojson';
@@ -409,6 +410,7 @@ export const countries = {
   united_states_virgin_islands,
   uruguay,
   usa,
+  usa_counties,
   uzbekistan,
   vanuatu,
   venezuela,

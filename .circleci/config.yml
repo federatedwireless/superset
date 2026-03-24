@@ -1,0 +1,108 @@
+version: 2.1
+jobs:
+  sast_code_scan:
+    docker:
+      - image: fwsas-docker.jfrog.io/security/cloud-security:v1.0.19
+        auth:  
+          username: $USERNAME
+          password: $PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: " SAST SCRIPT "
+          command: | 
+            /scripts/fedwi-sec-sast-script.sh "${DD_AUTH_KEY}" "${DD_URL}" \
+            "/scripts/dd-automate-ingest.py" \
+            "${CIRCLE_PROJECT_REPONAME}" \
+            "CICD_BRANCH_${CIRCLE_BRANCH}"  \
+            "${SONARQUBE_API_TOKEN}" \
+            "${SONARQUBE_URL}" \
+            'False' \
+            'python'
+  sast_code_scan_report:
+    docker:
+      - image: fwsas-docker.jfrog.io/security/cloud-security:v1.0.19
+        auth:  
+          username: $USERNAME
+          password: $PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: "SAST  SCRIPT"
+          command: | 
+            /scripts/fedwi-sec-sast-script.sh "${DD_AUTH_KEY}" "${DD_URL}" \
+            "/scripts/dd-automate-ingest.py" \
+            "${CIRCLE_PROJECT_REPONAME}" \
+            "CICD_TAG_${CIRCLE_TAG}"  \
+            "${SONARQUBE_API_TOKEN}" \
+            "${SONARQUBE_URL}" \
+            'True' \
+            'python'  
+ 
+  image_build:
+    docker:
+      - image: cimg/python:3.11
+    working_directory: ~/superset
+   
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      #login to artifactory
+      - run: docker login fwsas-docker.jfrog.io --username "$USERNAME" --password "$PASSWORD"
+      # build the application image
+      - run: docker build -t superset .
+      #save the image
+      - run: docker save -o superset.tar superset:latest
+      - persist_to_workspace:
+          root: ~/superset
+          paths:
+            - superset.tar
+ 
+  image_push:
+    docker:
+      - image: cimg/python:3.11
+    working_directory: ~/superset
+   
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: ~/superset
+      #login to artifactory
+      - run: docker login fwsas-docker.jfrog.io --username "$USERNAME" --password "$PASSWORD"
+      #load the image
+      - run: docker load -i  ~/superset/superset.tar
+      #tag the image
+      - run: docker tag superset:latest fwsas-docker.jfrog.io/analytics/superset/superset:${CIRCLE_TAG}
+      #push the image
+      - run: docker push fwsas-docker.jfrog.io/analytics/superset/superset:${CIRCLE_TAG}
+
+workflows:
+  build_and_push:
+    jobs:
+      - sast_code_scan:
+          context: artifactory
+      - sast_code_scan_report:
+          context: artifactory
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/ 
+      - image_build:
+          context: artifactory
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - image_push:
+          context: artifactory
+          requires:
+            - image_build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
