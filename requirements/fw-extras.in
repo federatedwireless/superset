@@ -1,0 +1,37 @@
+# Federated Wireless additions to the apache/superset:5.0.0 image.
+#
+# These used to be pip-installed from public PyPI on every pod start by the
+# Helm chart's bootstrapScript (fw-analytics-lakehouse-config,
+# terraform/modules/superset/templates/superset-values.yaml.tpl), unpinned and
+# without hashes, and then imported into the Superset process. They are now
+# installed at image build time from fw-extras.txt, which pins the full
+# dependency closure with hashes (installed with --require-hashes).
+#
+# Regenerate fw-extras.txt after editing this file, from the repo root. It is
+# constrained by fw-extras-constraints.txt (= Superset's base.txt pins, with
+# only typing-extensions / pyjwt / redis relaxed — see that file's header), so
+# Flask / SQLAlchemy / FAB / cryptography stay at the versions Superset ships:
+#
+#   uv pip compile requirements/fw-extras.in \
+#     -c requirements/fw-extras-constraints.txt \
+#     --python-version 3.11 --python-platform x86_64-manylinux_2_28 \
+#     --generate-hashes -o requirements/fw-extras.txt
+#
+# If base.txt changes (Superset upgrade), rebuild fw-extras-constraints.txt the
+# same way first. Review every new or changed package in the diff before
+# committing — the lock is the supply-chain boundary.
+
+# drivers / auth
+authlib
+psycopg2-binary
+trino
+sqlalchemy-trino
+
+# alerts & reports
+Pillow
+slack_sdk
+
+# AI assistant (FLASK_APP_MUTATOR in superset_config.py imports superset_chat)
+langchain-mcp-adapters==0.1.14
+superset-chat==0.1.0a24
+cryptography==43.0.3
