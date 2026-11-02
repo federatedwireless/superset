@@ -38,6 +38,6 @@
     COPY requirements/fw-extras.txt /app/requirements/fw-extras.txt
     RUN . /app/.venv/bin/activate && \
         uv pip install --require-hashes --no-deps -r /app/requirements/fw-extras.txt && \
-        python -c "import importlib.util as u, sys; m=['trino','sqlalchemy_trino','psycopg2','authlib','PIL','slack_sdk','superset_chat','langchain_mcp_adapters']; miss=[x for x in m if u.find_spec(x) is None]; sys.exit('missing: %s' % miss if miss else 0)"
+        python -c "import importlib.util as u, sys; m=['trino','trino.sqlalchemy','psycopg2','authlib','PIL','slack_sdk','superset_chat','langchain_mcp_adapters']; miss=[x for x in m if u.find_spec(x) is None]; sys.exit('missing: %s' % miss if miss else 0)"
 
     USER superset

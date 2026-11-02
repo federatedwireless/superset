@@ -28,8 +28,9 @@
 # drivers / auth
 authlib
 psycopg2-binary
+# trino ships the SQLAlchemy dialect itself (trino.sqlalchemy); the old
+# sqlalchemy-trino package is now an empty deprecated shim, so it is not listed.
 trino
-sqlalchemy-trino
 
 # alerts & reports
 Pillow
