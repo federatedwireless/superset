@@ -14,8 +14,12 @@
 #
 #   uv pip compile requirements/fw-extras.in \
 #     -c requirements/fw-extras-constraints.txt \
-#     --python-version 3.11 --python-platform x86_64-manylinux_2_28 \
+#     --python-version 3.10 --python-platform x86_64-manylinux_2_28 \
 #     --generate-hashes -o requirements/fw-extras.txt
+#
+# --python-version MUST match the base image's interpreter: apache/superset:5.0.0
+# ships Python 3.10 (check with `docker run --rm apache/superset:5.0.0 python -V`).
+# A mismatch shows up at build time as "current Python version ... does not satisfy".
 #
 # If base.txt changes (Superset upgrade), rebuild fw-extras-constraints.txt the
 # same way first. Review every new or changed package in the diff before
