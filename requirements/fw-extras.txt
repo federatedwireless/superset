@@ -2561,11 +2561,6 @@ sqlalchemy==1.4.54 \
     #   marshmallow-sqlalchemy
     #   sqlalchemy-utils
     #   superset-chat
-    #   trino
-sqlalchemy-trino==0.5.0 \
-    --hash=sha256:06e54562f5d326592b8254449686215a8e38e46b8c1d5534169271ce143f61af \
-    --hash=sha256:716c9c9fe60ef6dfd3b0c75e300c054ab84bdc90f2d9789247f8f4bd816814fe
-    # via -r requirements/fw-extras.in
 sqlalchemy-utils==0.38.3 \
     --hash=sha256:5c13b5d08adfaa85f3d4e8ec09a75136216fad41346980d02974a70a77988bf9 \
     --hash=sha256:9f9afba607a40455cf703adfa9846584bf26168a0c5a60a70063b70d65051f4d
@@ -2671,9 +2666,7 @@ tqdm==4.70.1 \
 trino==0.335.0 \
     --hash=sha256:5c96d89d610ab7712ede532d2eb41beb8627339571bceff6134370a8a496f685 \
     --hash=sha256:b5e6c928953689be8446cbf7dbb87894cbfe54cf099a85cf461c4206c252cd67
-    # via
-    #   -r requirements/fw-extras.in
-    #   sqlalchemy-trino
+    # via -r requirements/fw-extras.in
 typer==0.27.3 \
     --hash=sha256:d0396f770a560ab1b0a8504e13b5f254b728cedb05c61cf0359e944e50ce8901 \
     --hash=sha256:e50022f28b82a86313e54501317a1db64bf8f8d036ff8cfe5ca7e47675454aff
